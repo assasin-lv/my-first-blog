@@ -1,0 +1,152 @@
+{% extends "looper/cabecera.html" %}
+{% load render_table from django_tables2 %}
+
+{% block extrajs %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="/static/vendor/chart.js/Chart.min.js"></script>
+  <script>
+   $(document).ready(function () {
+
+	   {% if message %}
+		   $('#filtrar_error').modal('show');
+	   {% endif %}
+
+	   $('#datetimepicker_inicio').datetimepicker({
+		   format: 'L',
+	   });
+
+	   $('#datetimepicker_fin').datetimepicker({
+		   format: 'L',
+	   });
+
+   });
+  </script>
+	<script>
+		var color = Chart.helpers.color;
+	 //var result = [{ x: "18:00", y: "230" }, { x: "19:00", y: "232" }, { x: "20:00", y: "236" }, { x: "22:00", y: "228" }];
+	 var result = {{ eventos_por_hora|safe}};
+
+	 // parse labels and data
+	 var labels = result.map(e => moment(e.x, 'HH:mm'));
+	 var data = result.map(e => +e.y);
+	 var config = {
+	     type: 'line',
+	     data: {
+	         labels: labels,
+	         datasets: [{
+	             label: 'Eventos',
+	             backgroundColor: Looper.colors.brand.purple,
+	             borderColor: Looper.colors.brand.purple,
+	             data: data,
+	             fill: false,
+	             borderWidth: 2
+	         }]
+	     },
+	     options: {
+	         legend: {
+	             display: false
+	         },
+	         responsive: true,
+	         scales: {
+	             xAxes: [{
+	                 type: 'time',
+	                 time: {
+	                     unit: 'hour',
+	                     displayFormats: {
+	                         hour: 'HH:mm'
+	                     }
+	                 },
+	                 display: true,
+	                 scaleLabel: {
+	                     display: true,
+	                     labelString: 'Horas'
+	                 },
+	                 ticks: {
+	                     major: {
+	                         fontStyle: 'bold',
+	                         fontColor: '#FF0000'
+	                     }
+	                 }
+	             }],
+	             yAxes: [{
+	                 display: true,
+	                 scaleLabel: {
+	                     display: true,
+	                     labelString: 'Eventos por hora'
+	                 }
+	             }]
+	         }
+	     }
+	 };
+
+	 var ctx = document.getElementById('chart_hoy').getContext('2d');
+	 var myChart = new Chart(ctx, config);
+	</script>
+{% endblock %}
+
+{% block contenido %}
+  <h2 style="margin-bottom: 20px">{{ titulo }}</h2>
+
+	<div class="row justify-content-md-center" style="margin-bottom: 20px">
+		<div class="col col-md-12 col-lg-10">
+			<form class="text-left" action="{% url 'reportes' %}" method="post">
+				{% csrf_token %}
+
+				<div class="row">
+					<div class="col col-md-4">
+						<div class="form-group">
+							<label style="margin-right: 20px">Desde:</label>
+							<div class="input-group date" id="datetimepicker_inicio" data-target-input="nearest">
+								<input type="text" name="datepicker_inicio" class="form-control datetimepicker-input" data-target="#datetimepicker_inicio" required value="{{ inicio|date:'m/d/Y' }}"/>
+								<div class="input-group-append" data-target="#datetimepicker_inicio" data-toggle="datetimepicker">
+									<div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col col-md-4">
+						<div class="form-group">
+							<label style="margin-right: 20px">Hasta:</label>
+							<div class="input-group date" id="datetimepicker_fin" data-target-input="nearest">
+								<input type="text" name="datepicker_fin" class="form-control datetimepicker-input" data-target="#datetimepicker_fin" required value="{{ fin|date:'m/d/Y' }}"/>
+								<div class="input-group-append" data-target="#datetimepicker_fin" data-toggle="datetimepicker">
+									<div class="input-group-text"><i class="far fa-calendar-alt"></i></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col col-md-4">
+						<button type="submit" class="btn btn-primary ml-auto" style="margin-top: 30px">Filtrar</button>
+					</div>
+
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<canvas id="chart_hoy" width="400" height="80" style="margin-bottom: 30px"></canvas>
+
+	{% if table %}
+  {% render_table table %}
+	{% endif %}
+
+	<div class="modal fade" id="filtrar_error" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLabel">Reporte solicitado</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">{{message}}</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- GOOGLE FONT -->
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600" rel="stylesheet">
+    <!-- End GOOGLE FONT -->
+    <!-- BEGIN PLUGINS STYLES -->
+    <link rel="stylesheet" href="{% static 'vendor/open-iconic/css/open-iconic-bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/all.css' %}">
+    <!-- END PLUGINS STYLES -->
+
+    <!-- BEGIN THEME STYLES -->
+    <link rel="stylesheet" href="{% static 'stylesheets/theme.min.css' %}" data-skin="default">
+    <link rel="stylesheet" href="{% static 'stylesheets/theme-dark.min.css' %}" data-skin="dark">
+    <link rel="stylesheet" href="{% static 'stylesheets/custom.css' %}">
+    <!-- Disable unused skin immediately -->
+
+    <!-- INICIO Tempus Dominus -->
+				<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/css/tempusdominus-bootstrap-4.min.css" />
+    <!-- FIN Tempus Dominus -->
+
+    <script>
+      var skin = localStorage.getItem('skin') || 'default';
+      var unusedLink = document.querySelector('link[data-skin]:not([data-skin="'+ skin +'"])');
+
+      unusedLink.setAttribute('rel', '');
+      unusedLink.setAttribute('disabled', true);
+    </script>
+    <!-- END THEME STYLES -->
+
+    <!-- BEGIN PAGE LEVEL STYLES -->
+    <!-- styles for specific page goes here -->
+    <!-- END PAGE LEVEL STYLES -->
+
+    <title>{% block title %}{% endblock %}</title>
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div class="app">
+      {% block body %}
+    	{% endblock %}
+    </div>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <!-- BEGIN BASE JS -->
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/popper.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <!-- END BASE JS -->
+
+    <!-- BEGIN PLUGINS JS -->
+    <script src="/static/vendor/stacked-menu/stacked-menu.min.js"></script>
+    <!-- END PLUGINS JS -->
+
+    <!-- BEGIN THEME JS -->
+    <script src="/static/javascript/theme.min.js"></script>
+    <!-- END THEME JS -->
+
+    <!-- INICIO Tempus Dominus -->
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+	   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
+    <!-- FIN Tempus Dominus -->
+
+    <!-- BEGIN PAGE LEVEL JS -->
+    {% block extrajs %}{% endblock %}
+    <!-- END PAGE LEVEL JS -->
+  </body>
+</html>

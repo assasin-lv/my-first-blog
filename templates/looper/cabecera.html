@@ -1,0 +1,130 @@
+{% extends "looper/base.html" %}
+{% load static %}
+
+
+{% block body %}
+    <div class="app">
+      <!--[if lt IE 10]>
+      <div class="page-message" role="alert">You are using an <strong>outdated</strong> browser. Please <a class="alert-link" href="http://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</div>
+      <![endif]-->
+      <!-- .app-header -->
+      <header class="app-header app-header-dark">
+        <!-- .top-bar -->
+        <div class="top-bar">
+          <!-- .top-bar-brand -->
+          <div class="top-bar-brand">
+            <a href="/api/"><img src="{% static 'images/brand-inverse.png' %}" alt="" style="height: 32px;width: auto;"></a>
+            Monitoreo
+          </div><!-- /.top-bar-brand -->
+          <!-- .top-bar-list -->
+          <div class="top-bar-list">
+            <!-- .top-bar-item -->
+            <div class="top-bar-item px-2 d-md-none d-lg-none d-xl-none">
+              <!-- toggle menu -->
+              <button class="hamburger hamburger-squeeze" type="button" data-toggle="aside" aria-label="toggle menu"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button> <!-- /toggle menu -->
+            </div><!-- /.top-bar-item -->
+            <!-- .top-bar-item -->
+            <div class="top-bar-item top-bar-item-full">
+              <!-- .top-bar-search -->
+              <form class="top-bar-search">
+                <div class="input-group input-group-search">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"><span class="oi oi-magnifying-glass"></span></span>
+                  </div><input type="text" class="form-control" aria-label="Search" placeholder="Buscar Equipo">
+                </div>
+              </form><!-- /.top-bar-search -->
+            </div><!-- /.top-bar-item -->
+            <!-- .top-bar-item -->
+            <div class="top-bar-item top-bar-item-right px-0 d-none d-sm-flex">
+              <!-- .btn-account -->
+              <div class="dropdown">
+                <button class="btn-account d-none d-md-flex" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user"></i></button>
+                <div class="dropdown-arrow dropdown-arrow-left"></div><!-- .dropdown-menu -->
+                <div class="dropdown-menu">
+                  <h6 class="dropdown-header d-none d-md-block d-lg-none"> Monitoreo </h6><a class="dropdown-item" href="#"><span class="dropdown-icon oi oi-person"></span> Perfil</a> <a class="dropdown-item" href="/api/logout"><span class="dropdown-icon oi oi-account-logout"></span> Salir</a>
+                </div><!-- /.dropdown-menu -->
+              </div><!-- /.btn-account -->
+            </div><!-- /.top-bar-item -->
+          </div><!-- /.top-bar-list -->
+        </div><!-- /.top-bar -->
+      </header><!-- /.app-header -->
+
+
+    <!-- .app-aside -->
+      <aside class="app-aside app-aside-expand-md app-aside-light">
+        <!-- .aside-content -->
+        <div class="aside-content">
+          <!-- .aside-header -->
+          <header class="aside-header d-block d-md-none">
+            <!-- .btn-account -->
+            <button class="btn-account" type="button" data-toggle="collapse" data-target="#dropdown-aside"><span class="dropdown-icon oi oi-person"></span> <span class="account-icon"><span class="fa fa-caret-down fa-lg"></span></span> <span class="account-summary"><span class="account-name">Sistema de Monitoreo</span></span></button> <!-- /.btn-account -->
+            <!-- .dropdown-aside -->
+            <div id="dropdown-aside" class="dropdown-aside collapse">
+              <!-- dropdown-items -->
+              <div class="pb-3">
+                <a class="dropdown-item" href="#"><span class="dropdown-icon oi oi-person"></span> Perfil</a> <a class="dropdown-item" href="/api/logout"><span class="dropdown-icon oi oi-account-logout"></span> Salir</a>
+              </div><!-- /dropdown-items -->
+            </div><!-- /.dropdown-aside -->
+          </header><!-- /.aside-header -->
+          <!-- .aside-menu -->
+          <div class="aside-menu overflow-hidden">
+            <!-- .stacked-menu -->
+            <nav id="stacked-menu" class="stacked-menu">
+              <!-- .menu -->
+              <ul class="menu">
+                <!-- .menu-item -->
+                <li class="menu-item">
+                  <a href="/api/" class="menu-link"><span class="menu-icon fas fa-home"></span> <span class="menu-text">Dashboard</span></a>
+                </li><!-- /.menu-item -->
+                  <!-- .menu-item -->
+                <li class="menu-item">
+                  <a href="/api/productividad" class="menu-link"><span class="menu-icon fas fa-chart-line"></span> <span class="menu-text">Productividad</span></a>
+                </li><!-- /.menu-item -->
+                  <!-- .menu-item -->
+                <li class="menu-item">
+                  <a href="/api/disponibilidad" class="menu-link"><span class="menu-icon fas fa-stopwatch"></span> <span class="menu-text">Disponibilidad</span></a>
+                </li><!-- /.menu-item -->
+	              <!-- .menu-item -->
+                <li class="menu-item">
+                  <a href="{% url 'reportes' %}" class="menu-link"><span class="menu-icon fas fa-clipboard-list"></span> <span class="menu-text">Reportes</span></a>
+                </li><!-- /.menu-item -->
+
+                <!-- .menu-header -->
+                <li class="menu-header">EQUIPOS</li><!-- /.menu-header -->
+                <!-- .menu-item -->
+                <li class="menu-item">
+                  <a href="/api/" class="menu-link"><span class="menu-icon oi oi-pencil"></span> <span class="menu-text">Agregar</span></a>
+                </li><!-- /.menu-item -->
+                <!-- .menu-item -->
+                <li class="menu-item">
+                  <a href="/api/inventario" class="menu-link"><span class="menu-icon fas fa-table"></span> <span class="menu-text">Inventario</span></a>
+                </li><!-- /.menu-item -->
+              </ul><!-- /.menu -->
+            </nav><!-- /.stacked-menu -->
+          </div><!-- /.aside-menu -->
+        </div><!-- /.aside-content -->
+      </aside><!-- /.app-aside -->
+
+      <!-- .app-main -->
+      <main class="app-main">
+        <!-- .wrapper -->
+        <div class="wrapper">
+          <!-- .page -->
+          <div class="page">
+            <!-- .page-inner -->
+            <div class="page-inner">
+              <!-- .page-title-bar -->
+              <header class="page-title-bar">
+                <!-- page title stuff goes here -->
+                <h1 class="page-title"> {% block page-title %}{% endblock %} </h1>
+              </header><!-- /.page-title-bar -->
+              <!-- .page-section -->
+              <div class="page-section">
+                {% block contenido %}{% endblock %}
+              </div><!-- /.page-section -->
+            </div><!-- /.page-inner -->
+          </div><!-- /.page -->
+        </div><!-- /.wrapper -->
+      </main><!-- /.app-main -->
+    </div>
+{% endblock %}

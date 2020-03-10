@@ -1,0 +1,181 @@
+{% extends "looper/cabecera.html" %}
+
+{% block contenido %}
+    <h2>Disponibilidad de la red</h2>
+  <div class="metric-row">
+  <!-- metric column -->
+  <div class="col-lg-9">
+    <!-- nesting metric group -->
+    <!-- metric row -->
+    <div class="metric-row metric-flush">
+      <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">
+            <span class="badge badge-lg badge-warning">
+              <span class="oi oi-media-record pulse mr-1"></span>
+              Disponibilidad {{ ayer }}: {{ disponibilidad | floatformat:2 }} %
+            </span>
+          </h2>
+            <br>
+            <h2 class="metric-label">Operativos (sin tickets): {{ equipos_operativos }} </h2>
+            <h2 class="metric-label">Inoperativos (con tickets): {{ equipos_inoperativos }}</h2>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+	    <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <p class="metric-value h3">
+              <canvas id="chart_monitoreados" width="200" height="75"></canvas>
+          </p>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+    </div>
+    <!-- /metric row -->
+  </div>
+  <!-- /metric column -->
+  <!-- metric column -->
+  <div class="col-lg-9">
+    <!-- nesting metric group -->
+    <!-- metric row -->
+    <div class="metric-row metric-flush">
+      <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">
+            <span class="badge badge-lg badge-dark">
+              <span class="oi oi-media-record pulse mr-1"></span>
+              Incidencias por tiempo de solución
+            </span>
+          </h2>
+            <span class="lista_estadisticas">Menos de un día: {{ incidencias_1 }} </span>
+            <span class="lista_estadisticas">Entre uno y dos días: {{ incidencias_2 }}</span>
+            <span class="lista_estadisticas">Más de 3 días: {{ incidencias_3 }}</span>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+	    <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <p class="metric-value h3">
+              <canvas id="chart_tiempos" width="200" height="75"></canvas>
+          </p>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+    </div>
+    <!-- /metric row -->
+  </div>
+  <!-- /metric column -->
+  </div>
+
+  <h2>Histórico de disponibilidad <small>(últimos 30 días)</small></h2>
+  {% if ultimos_eventos %}
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Timestamp</th>
+      <th scope="col">Número de serie</th>
+      <th scope="col">Nombre Comercio</th>
+      <th scope="col">Tipo</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for evento in ultimos_eventos %}
+    <tr>
+      <th scope="row">{{ evento.timestamp|date:"d/m/Y h:i A" }}</th>
+      <td>{{ evento.nro_serie }}</td>
+      <td>{{ evento.nombre_comercio }}</td>
+      <td>{{ evento.tipo }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+  {% else %}
+    <p>No se encontraron logs</p>
+  {% endif %}
+
+{% endblock %}
+
+{% block extrajs %}
+  <script src="/static/vendor/chart.js/Chart.min.js"></script>
+  <script>
+      var disponibilidad = [{{ equipos_operativos }}, {{ equipos_inoperativos }}];
+      var config = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: disponibilidad,
+					backgroundColor: [
+						Looper.colors.brand.green,
+						Looper.colors.brand.red,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'equipos operativos',
+					'equipos inoperativos',
+				]
+			},
+			options: {
+			    legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 10,
+                    padding: 5
+                }
+            },
+				responsive: true
+			}
+		};
+
+
+      var ctx = document.getElementById('chart_monitoreados').getContext('2d');
+      var myChart = new Chart(ctx, config);
+
+      var tiempos = [{{ incidencias_1 }}, {{ incidencias_2 }}, {{ incidencias_3 }}];
+      var config_tiempos = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: tiempos,
+					backgroundColor: [
+						Looper.colors.brand.yellow,
+						Looper.colors.brand.purple,
+                        Looper.colors.brand.orange,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'< 1 día',
+					'1-2 días',
+                    '> 2 días',
+				]
+			},
+			options: {
+			    legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 10,
+                    padding: 5
+                }
+            },
+				responsive: true
+			}
+		};
+
+
+      var ctx_tiempos = document.getElementById('chart_tiempos').getContext('2d');
+      var myChart_tiempos = new Chart(ctx_tiempos, config_tiempos);
+  </script>
+{% endblock %}

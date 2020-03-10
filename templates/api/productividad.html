@@ -1,0 +1,180 @@
+{% extends "looper/cabecera.html" %}
+
+{% block contenido %}
+    <h2>Productividad de la red</h2>
+  <div class="metric-row">
+  <!-- metric column -->
+  <div class="col-lg-9">
+    <!-- nesting metric group -->
+    <!-- metric row -->
+    <div class="metric-row metric-flush">
+      <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">
+            <span class="badge badge-lg badge-info">
+              <span class="oi oi-media-record pulse mr-1"></span>
+              Corresponsales Instalados: {{ equipos_total }}
+            </span>
+          </h2>
+            <br>
+            <h2 class="metric-label">Monitoreados: {{ equipos_monitoreados }} </h2>
+            <h2 class="metric-label">Sin Monitorear: {{ equipos_sin_monitorear }}</h2>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+	    <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <p class="metric-value h3">
+              <canvas id="chart_monitoreados" width="200" height="75"></canvas>
+          </p>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+    </div>
+    <!-- /metric row -->
+  </div>
+  <!-- /metric column -->
+  <!-- metric column -->
+  <div class="col-lg-9">
+    <!-- nesting metric group -->
+    <!-- metric row -->
+    <div class="metric-row metric-flush">
+      <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">
+            <span class="badge badge-lg badge-success">
+              <span class="oi oi-media-record pulse mr-1"></span>
+              Actividad {{ hoy }}
+            </span>
+          </h2>
+            <br>
+            <h2 class="metric-label">Activos: {{ activos }} </h2>
+            <h2 class="metric-label">Inactivos: {{ inactivos }}</h2>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+	    <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <p class="metric-value h3">
+              <canvas id="chart_actividad" width="200" height="75"></canvas>
+          </p>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+    </div>
+    <!-- /metric row -->
+  </div>
+  <!-- /metric column -->
+  </div>
+
+  <h2>Uso de la red <small>(últimos 30 días)</small></h2>
+  {% if ultimos_eventos %}
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Timestamp</th>
+      <th scope="col">Número de serie</th>
+      <th scope="col">Nombre Comercio</th>
+      <th scope="col">Tipo</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for evento in ultimos_eventos %}
+    <tr>
+      <th scope="row">{{ evento.timestamp|date:"d/m/Y h:i A" }}</th>
+      <td>{{ evento.nro_serie }}</td>
+      <td>{{ evento.nombre_comercio }}</td>
+      <td>{{ evento.tipo }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+  {% else %}
+    <p>No se encontraron logs</p>
+  {% endif %}
+
+{% endblock %}
+
+{% block extrajs %}
+  <script src="/static/vendor/chart.js/Chart.min.js"></script>
+  <script>
+      var equipos = [{{ equipos_monitoreados }}, {{ equipos_sin_monitorear }}];
+      var config = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: equipos,
+					backgroundColor: [
+						Looper.colors.brand.purple,
+						Looper.colors.brand.yellow,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'monitoreados',
+					'sin monitorear',
+				]
+			},
+			options: {
+			    legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 10,
+                    padding: 5
+                }
+            },
+				responsive: true
+			}
+		};
+
+
+      var ctx = document.getElementById('chart_monitoreados').getContext('2d');
+      var myChart = new Chart(ctx, config);
+
+      var actividad = [{{ activos }}, {{ inactivos }}];
+
+      var config_actividad = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: actividad,
+					backgroundColor: [
+						Looper.colors.brand.green,
+						Looper.colors.brand.red,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'activos - {{ porcentaje_activos | floatformat:2 }}%',
+					'inactivos',
+				]
+			},
+			options: {
+			    legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 10,
+                    padding: 5
+                }
+            },
+				responsive: true
+			}
+		};
+
+
+      var ctx_actividad = document.getElementById('chart_actividad').getContext('2d');
+      var myChart_actividad = new Chart(ctx_actividad, config_actividad);
+  </script>
+{% endblock %}

@@ -1,0 +1,125 @@
+{% extends "looper/cabecera.html" %}
+
+{% block contenido %}
+  <div class="metric-row">
+  <!-- metric column -->
+  <div class="col-lg-9">
+    <!-- nesting metric group -->
+    <!-- metric row -->
+    <div class="metric-row metric-flush">
+      <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <div class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">Equipos Activos</h2>
+          <p class="metric-value h3">
+              <canvas id="chart_actividad" width="200" height="75"></canvas>
+          </p>
+        </div>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+	    <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <a href="/api/log" class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">Equipos Activos</h2>
+          <p class="metric-value h3">
+            <sub><i class="fa fa-tasks"></i></sub>
+            <span class="value">{{ count_total }} / {{ equipos_count }}</span>
+          </p>
+        </a>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+      <!-- metric column -->
+      <div class="col">
+        <!-- .metric -->
+        <a href="/api/hoy" class="metric metric-bordered align-items-center">
+          <h2 class="metric-label">
+            <span class="badge badge-lg badge-success">
+              <span class="oi oi-media-record pulse mr-1"></span>
+              Logs de hoy
+            </span>
+          </h2>
+          <p class="metric-value h3">
+        <sub><i class="oi oi-timer"></i></sub>
+            <span class="value">{{ eventos_hoy }}</span>
+          </p>
+        </a>
+        <!-- /.metric -->
+      </div>
+      <!-- /metric column -->
+    </div>
+    <!-- /metric row -->
+  </div>
+  <!-- /metric column -->
+</div>
+
+  <h2>Últimos logs</h2>
+  {% if ultimos_eventos %}
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">Timestamp</th>
+      <th scope="col">Número de serie</th>
+      <th scope="col">Nombre Comercio</th>
+      <th scope="col">Tipo</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for evento in ultimos_eventos %}
+    <tr>
+      <th scope="row">{{ evento.timestamp|date:"d/m/Y h:i A" }}</th>
+      <td>{{ evento.nro_serie }}</td>
+      <td>{{ evento.nombre_comercio }}</td>
+      <td>{{ evento.tipo }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+  {% else %}
+    <p>No se encontraron logs</p>
+  {% endif %}
+
+{% endblock %}
+
+{% block extrajs %}
+  <script src="/static/vendor/chart.js/Chart.min.js"></script>
+  <script>
+      var data = [{{ count_periodo1 }}, {{ count_periodo2 }}, {{ count_periodo3 }}];
+      var config = {
+			type: 'pie',
+			data: {
+				datasets: [{
+					data: data,
+					backgroundColor: [
+						Looper.colors.brand.purple,
+						Looper.colors.brand.yellow,
+						Looper.colors.brand.blue,
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'5 min',
+					'15 min',
+					'60 min',
+				]
+			},
+			options: {
+			    legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 10,
+                    padding: 5
+                }
+            },
+				responsive: true
+			}
+		};
+
+
+      var ctx = document.getElementById('chart_actividad').getContext('2d');
+      var myChart = new Chart(ctx, config);
+  </script>
+{% endblock %}

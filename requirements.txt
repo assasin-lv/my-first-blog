@@ -1,1 +1,6 @@
 Django~=2.2.4
+djangorestframework
+django-tables2
+django-filter
+django-import-export
+psycopg2-binary

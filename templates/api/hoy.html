@@ -1,0 +1,74 @@
+{% extends "looper/cabecera.html" %}
+{% load render_table from django_tables2 %}
+
+{% block extrajs %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+  <script src="/static/vendor/chart.js/Chart.min.js"></script>
+  <script>
+      var color = Chart.helpers.color;
+      //var result = [{ x: "18:00", y: "230" }, { x: "19:00", y: "232" }, { x: "20:00", y: "236" }, { x: "22:00", y: "228" }];
+      var result = {{ eventos_por_hora|safe}};
+
+      // parse labels and data
+      var labels = result.map(e => moment(e.x, 'HH:mm'));
+      var data = result.map(e => +e.y);
+      var config = {
+          type: 'line',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Eventos',
+                  backgroundColor: Looper.colors.brand.purple,
+                  borderColor: Looper.colors.brand.purple,
+                  data: data,
+                  fill: false,
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              legend: {
+                  display: false
+              },
+              responsive: true,
+              scales: {
+                  xAxes: [{
+                      type: 'time',
+                      time: {
+                          unit: 'hour',
+                          displayFormats: {
+                              hour: 'HH:mm'
+                          }
+                      },
+                      display: true,
+                      scaleLabel: {
+                          display: true,
+                          labelString: 'Horas'
+                      },
+                      ticks: {
+                          major: {
+                              fontStyle: 'bold',
+                              fontColor: '#FF0000'
+                          }
+                      }
+                  }],
+                  yAxes: [{
+                      display: true,
+                      scaleLabel: {
+                          display: true,
+                          labelString: 'Eventos por hora'
+                      }
+                  }]
+              }
+          }
+      };
+
+      var ctx = document.getElementById('chart_hoy').getContext('2d');
+      var myChart = new Chart(ctx, config);
+  </script>
+{% endblock %}
+
+{% block contenido %}
+  <h2>Eventos del día</h2>
+  <canvas id="chart_hoy" width="400" height="80"></canvas>
+  {% render_table table %}
+{% endblock %}
